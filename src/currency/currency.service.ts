@@ -1,12 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs';
 
 @Injectable()
 export class CurrencyService {
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService) {}
 
-  getAll(): Observable<any> {
-    return this.httpService.get('https://economia.awesomeapi.com.br/all');
+  economyUrl = process.env.ECONOMY_URL;
+
+  getAll() {
+    const currencyUrl = this.httpService.get(this.economyUrl).pipe(
+      catchError((error) => {
+        error('Error when getting data');
+        throw new BadRequestException('HELLOOO', error);
+      }),
+      map((result) => {
+        if (result.status === 200) {
+          return result.data;
+        }
+      }),
+    );
+    console.log("get successfully ran");
+    return currencyUrl;
+  }
+
+  getSymbol(symbol: string) {
+    return this.getAll().pipe(
+      map((result) => result[symbol]),
+    );
   }
 }

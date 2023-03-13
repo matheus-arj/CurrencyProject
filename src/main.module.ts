@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { CurrencyModule } from "./currency/currency.module";
 import { Product } from "./product/product.entity";
-import { ProdutoModule } from "./product/product.module";
+import { ProductModule } from "./product/product.module";
 
 
 @Module({
@@ -16,7 +17,7 @@ import { ProdutoModule } from "./product/product.module";
     entities: [Product],
     synchronize: true,
   }), 
-  ProdutoModule],
+  ProductModule, CurrencyModule],
   // controllers: [ProdutoController],
   // providers: [ProdutoService],
 })
